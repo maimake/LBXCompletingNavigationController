@@ -1,7 +1,7 @@
 
 Pod::Spec.new do |s|
 
-  s.name         = "LBXNavigationController"
+  s.name         = "LBXCompletingNavigationController"
   s.version      = "1.0"
   s.summary      = "push ViewController with completion"
 
