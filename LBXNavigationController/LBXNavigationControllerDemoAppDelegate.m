@@ -78,6 +78,33 @@
     // Add a button for test purposes.
     UIBarButtonItem *testButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"button.title.push", nil) style:0 target:self action:@selector(pushNextLevel:)];
     [viewController.navigationItem setRightBarButtonItem:testButton animated:YES];
+    
+    UIButton* button =[[UIButton alloc] initWithFrame:CGRectMake(100, 100, 100, 100)];
+    [button addTarget:self action:@selector(onButtonPressed) forControlEvents:UIControlEventTouchUpInside];
+    [button setTitle:@"present" forState:UIControlStateNormal];
+    [viewController.view addSubview:button];
+}
+
+-(void)onButtonPressed
+{
+    NSLog(@"Button pressed");
+    
+    UIViewController *rootViewController = [[UIViewController alloc] initWithNibName:nil bundle:nil];
+    rootViewController.view.backgroundColor = [UIColor blueColor];
+    LBXCompletingNavigationController* nav = [[LBXCompletingNavigationController alloc] initWithRootViewController:rootViewController];
+    nav.delegate = self;
+    
+    [self addPushButtonToViewController:rootViewController];
+    UIBarButtonItem *closeButton = [[UIBarButtonItem alloc] initWithTitle:NSLocalizedString(@"button.title.close", nil) style:0 target:self action:@selector(closeNav:)];
+    rootViewController.navigationItem.leftBarButtonItem = closeButton;
+    
+    [[self topMostController] presentViewController:nav animated:YES completion:nil];
+}
+
+-(void)closeNav:(id)sender
+{
+    LBXCompletingNavigationController* nav = (LBXCompletingNavigationController*)[self topMostController];
+    [nav dismissViewControllerAnimated:YES completion:nil];
 }
 
 - (void)pushNextLevel:(id)sender;
@@ -88,18 +115,33 @@
     UIColor *randomColor = [UIColor colorWithRed:red/255 green:green/255 blue:blue/255 alpha:1];
     nextViewController.view.backgroundColor = randomColor;
     
-    NSString *title = [NSString stringWithFormat:@"%ld", (long)[[self.navigationController viewControllers] count]];
+    LBXCompletingNavigationController* nav = (LBXCompletingNavigationController*)[self topMostController];
+    NSString *title = [NSString stringWithFormat:@"%ld", (long)[[nav viewControllers] count]];
     
     // Push the view controller.
-    [self.navigationController pushViewController:nextViewController
+    
+    
+    [nav pushViewController:nextViewController
                                          animated:YES
                                        completion:^(UINavigationController *navigationController, UIViewController *viewController)
      {
          // Assign the button to the view controller.
          [self addPushButtonToViewController:viewController];
          [viewController setTitle:title];
+         NSLog(@"push title: %@", title);
      }];
 }
 
 
+
+- (UIViewController*)topMostController
+{
+    UIViewController *topController = [self.window rootViewController];
+    
+    //  Getting topMost ViewController
+    while ([topController presentedViewController])	topController = [topController presentedViewController];
+    
+    //  Returning topMost ViewController
+    return topController;
+}
 @end
