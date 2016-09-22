@@ -9,6 +9,12 @@ Pod::Spec.new do |s|
 push ViewController with completion
                    DESC
 
+
+  s.homepage         = 'https://github.com/nzeltzer/LBXCompletingNavigationController'
+  s.license          = { :type => 'MIT', :file => 'LICENSE' }
+  s.author           = { 'mai' => 'yshxinjian@gmail.com' }
+  s.source           = { :git => 'https://github.com/nzeltzer/LBXCompletingNavigationController', :tag => s.version.to_s }
+
   s.license      = "MIT"
 
   s.platform     = :ios, "7.0"
